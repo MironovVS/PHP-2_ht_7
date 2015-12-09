@@ -2,9 +2,30 @@
 //
 // Помощник работы с БД
 //
-class MSQL
-{
-	private static $instance;	// экземпляр класса
+
+class MSQL {
+
+	// Настройки подключения к БД.
+	private static $instance;
+	private $hostname = 'localhost';
+	private $username = 'root';
+	private $password = '';
+	private $dbName = 'PHP2-7';
+  protected $link;
+
+	private function __construct()
+	{
+		// Подключение к БД
+		$link = mysqli_connect($this->hostname, $this->username, $this->password);
+		$db = mysqli_select_db($link, $this->dbName);
+		// Создание БД, таблицы и заполнение таблицы
+		if(!$db) {
+			mysqli_select_db($link, $this->dbName);
+		}
+		mysqli_query($link, 'SET NAMES utf8');
+		mysqli_set_charset($link, 'utf8');
+		$this->link = $link;
+	}
 
 	//
 	// Получение экземпляра класса
@@ -25,17 +46,17 @@ class MSQL
 	//
 	public function Select($query)
 	{
-		$result = mysql_query($query);
+		$result = mysqli_query($this->link, $query);
 		
 		if (!$result)
-			die(mysql_error());
+			die(mysqli_error($this->link));
 		
-		$n = mysql_num_rows($result);
+		$n = mysqli_num_rows($result);
 		$arr = array();
 	
 		for($i = 0; $i < $n; $i++)
 		{
-			$row = mysql_fetch_assoc($result);		
+			$row = mysqli_fetch_assoc($result);
 			$arr[] = $row;
 		}
 
@@ -55,7 +76,7 @@ class MSQL
 	
 		foreach ($object as $key => $value)
 		{
-			$key = mysql_real_escape_string($key . '');
+			$key = mysqli_real_escape_string($this->link, $key . '');
 			$columns[] = $key;
 			
 			if ($value === null)
@@ -64,7 +85,7 @@ class MSQL
 			}
 			else
 			{
-				$value = mysql_real_escape_string($value . '');							
+				$value = mysqli_real_escape_string($this->link, $value . '');
 				$values[] = "'$value'";
 			}
 		}
@@ -73,12 +94,12 @@ class MSQL
 		$values_s = implode(',', $values);
 			
 		$query = "INSERT INTO $table ($columns_s) VALUES ($values_s)";
-		$result = mysql_query($query);
+		$result = mysqli_query($this->link, $query);
 								
 		if (!$result)
-			die(mysql_error());
+			die(mysqli_error($this->link));
 			
-		return mysql_insert_id();
+		return mysqli_insert_id($this->link);
 	}
 	
 	//
@@ -94,7 +115,7 @@ class MSQL
 	
 		foreach ($object as $key => $value)
 		{
-			$key = mysql_real_escape_string($key . '');
+			$key = mysqli_real_escape_string($this->link, $key . '');
 			
 			if ($value === null)
 			{
@@ -102,19 +123,19 @@ class MSQL
 			}
 			else
 			{
-				$value = mysql_real_escape_string($value . '');					
+				$value = mysqli_real_escape_string($this->link, $value . '');
 				$sets[] = "$key='$value'";			
 			}			
 		}
 		
 		$sets_s = implode(',', $sets);			
 		$query = "UPDATE $table SET $sets_s WHERE $where";
-		$result = mysql_query($query);
+		$result = mysqli_query($this->link, $query);
 		
 		if (!$result)
-			die(mysql_error());
+			die(mysqli_error($this->link));
 
-		return mysql_affected_rows();	
+		return mysqli_affected_rows($this->link);
 	}
 	
 	//
@@ -126,11 +147,11 @@ class MSQL
 	public function Delete($table, $where)
 	{
 		$query = "DELETE FROM $table WHERE $where";		
-		$result = mysql_query($query);
+		$result = mysqli_query($this->link, $query);
 						
 		if (!$result)
-			die(mysql_error());
+			die(mysqli_error($this->link));
 
-		return mysql_affected_rows();	
+		return mysqli_affected_rows($this->link);
 	}
 }
