@@ -138,30 +138,41 @@ class M_Users
 	// $id_user		- если не указан, значит, для текущего
 	// результат	- true или false
 	//
-	public function Can($priv, $id_user = null)
+	public function Can($priv, $user = null)
 	{
+		$user=$this->Get();
+//		var_dump($user['id_user']);
 
-		$id_user=array();
-
-		// СДЕЛАТЬ САМОСТОЯТЕЛЬНО
-		$t = "SELECT id_priv FROM privs WHERE name = '%s'";
+				// СДЕЛАТЬ САМОСТОЯТЕЛЬНО
+		$t = "SELECT * FROM privs WHERE name = '%s'";
 		$query = sprintf($t, $priv);
 		$result_priv = $this->msql->Select($query); //Получаем id_priv из БД
-		$id_priv=$result_priv[0];
+		$id_priv=$result_priv[0]['id_priv'];
+//		var_dump($id_priv); die();
 
-		$t = "SELECT id_role FROM privs2roles WHERE id_priv = '%s'";
-		$query = sprintf($t, $id_priv);
+		$t_rol = "SELECT id_role FROM privs2roles WHERE id_priv = '%s'";
+		$query = sprintf($t_rol, $id_priv);
 		$result_rol = $this->msql->Select($query); //Получаем id_role из БД
-		$id_role=$result_rol[0];
 
-		$t = "SELECT id_user FROM users WHERE id_role = '%s'";
-		$query = sprintf($t, $id_role);
-		$result_user = $this->msql->Select($query); //Получаем id_user из БД
-		$id_user[]=$result_user[0];
+//		var_dump($result_rol[0]['id_role']); die();
+//		var_dump(count($result_rol)); die();
 
-		if (isset ($id_user)) {
-			return true;
+		for ($i = 0 ; $i < count($result_rol); $i++) {
+			$t_user = "SELECT id_user FROM users WHERE id_role = '%s'";
+			$query = sprintf($t_user, $result_rol[$i]['id_role']);
+			$request = $this->msql->Select($query);
+//			var_dump($request[0]['id_user']);
+//			var_dump($user['id_user']);
+			if ($request[0]['id_user'] == $user['id_user']) {
+					return true;
+			}
 		}
+
+
+
+
+
+
 
 		return false;
 	}
