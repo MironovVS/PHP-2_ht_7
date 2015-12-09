@@ -62,7 +62,7 @@ class M_Users
 		$id_user = $user['id_user'];
 				
 		// проверяем пароль
-		if ($user['password'] != md5($password))
+		if ($user['password'] != $password)
 			return false;
 				
 		// запоминаем имя и md5(пароль)
@@ -70,7 +70,7 @@ class M_Users
 		{
 			$expire = time() + 3600 * 24 * 100;
 			setcookie('login', $login, $expire);
-			setcookie('password', md5($password), $expire);
+			setcookie('password', $password, $expire);
 		}		
 				
 		// открываем сессию и запоминаем SID
@@ -99,10 +99,14 @@ class M_Users
 	// результат	- объект пользователя
 	//
 	public function Get($id_user = null)
-	{	
+	{
+
+
 		// Если id_user не указан, берем его по текущей сессии.
 		if ($id_user == null)
 			$id_user = $this->GetUid();
+
+//		var_dump($id_user);
 			
 		if ($id_user == null)
 			return null;
@@ -111,7 +115,10 @@ class M_Users
 		$t = "SELECT * FROM users WHERE id_user = '%d'";
 		$query = sprintf($t, $id_user);
 		$result = $this->msql->Select($query);
-		return $result[0];		
+
+			return $result[0];
+
+
 	}
 	
 	//
@@ -120,7 +127,7 @@ class M_Users
 	public function GetByLogin($login)
 	{	
 		$t = "SELECT * FROM users WHERE login = '%s'";
-		$query = sprintf($t, mysql_real_escape_string($login));
+		$query = sprintf($t, $login);
 		$result = $this->msql->Select($query);
 		return $result[0];
 	}
@@ -132,8 +139,30 @@ class M_Users
 	// результат	- true или false
 	//
 	public function Can($priv, $id_user = null)
-	{		
+	{
+
+		$id_user=array();
+
 		// СДЕЛАТЬ САМОСТОЯТЕЛЬНО
+		$t = "SELECT id_priv FROM privs WHERE name = '%s'";
+		$query = sprintf($t, $priv);
+		$result_priv = $this->msql->Select($query); //Получаем id_priv из БД
+		$id_priv=$result_priv[0];
+
+		$t = "SELECT id_role FROM privs2roles WHERE id_priv = '%s'";
+		$query = sprintf($t, $id_priv);
+		$result_rol = $this->msql->Select($query); //Получаем id_role из БД
+		$id_role=$result_rol[0];
+
+		$t = "SELECT id_user FROM users WHERE id_role = '%s'";
+		$query = sprintf($t, $id_role);
+		$result_user = $this->msql->Select($query); //Получаем id_user из БД
+		$id_user[]=$result_user[0];
+
+		if (isset ($id_user)) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -160,14 +189,17 @@ class M_Users
 
 		// Берем по текущей сессии.
 		$sid = $this->GetSid();
+
+//		var_dump($sid);
 				
 		if ($sid == null)
 			return null;
 			
 		$t = "SELECT id_user FROM sessions WHERE sid = '%s'";
-		$query = sprintf($t, mysql_real_escape_string($sid));
+		$query = sprintf($t, $sid);
 		$result = $this->msql->Select($query);
-				
+
+
 		// Если сессию не нашли - значит пользователь не авторизован.
 		if (count($result) == 0)
 			return null;
@@ -189,6 +221,8 @@ class M_Users
 	
 		// Ищем SID в сессии.
 		$sid = $_SESSION['sid'];
+
+
 								
 		// Если нашли, попробуем обновить time_last в базе. 
 		// Заодно и проверим, есть ли сессия там.
@@ -197,13 +231,13 @@ class M_Users
 			$session = array();
 			$session['time_last'] = date('Y-m-d H:i:s'); 			
 			$t = "sid = '%s'";
-			$where = sprintf($t, mysql_real_escape_string($sid));
+			$where = sprintf($t, $sid);
 			$affected_rows = $this->msql->Update('sessions', $session, $where);
 
 			if ($affected_rows == 0)
 			{
 				$t = "SELECT count(*) FROM sessions WHERE sid = '%s'";		
-				$query = sprintf($t, mysql_real_escape_string($sid));
+				$query = sprintf($t, $sid);
 				$result = $this->msql->Select($query);
 				
 				if ($result[0]['count(*)'] == 0)
@@ -216,9 +250,10 @@ class M_Users
 		if ($sid == null && isset($_COOKIE['login']))
 		{
 			$user = $this->GetByLogin($_COOKIE['login']);
-			
+
 			if ($user != null && $user['password'] == $_COOKIE['password'])
 				$sid = $this->OpenSession($user['id_user']);
+
 		}
 		
 		// Запоминаем в кеш.
