@@ -138,6 +138,7 @@ class M_Users
 	// результат	- true или false
 	//
 	public function Can ($priv, $user = null)
+
 	{
 		$user = $this->Get();
 //		var_dump($user['id_user']);
@@ -173,10 +174,19 @@ class M_Users
 	// Проверка активности пользователя
 	// $id_user		- идентификатор
 	// результат	- true если online
-	//
 	public function IsOnline ($id_user)
 	{
-		// СДЕЛАТЬ САМОСТОЯТЕЛЬНО
+
+		$t = "SELECT id_user FROM sessions WHERE id_user = '%s'";
+		$query = sprintf($t, $id_user['id_user']);
+		$result = $this->msql->Select($query);
+
+		for ($i = 0; $i < count($result); $i++) {
+			if ($query[$i] == $id_user['id_user']) {
+				return "true";
+			}
+		}
+
 		return false;
 	}
 
@@ -305,27 +315,33 @@ class M_Users
 		return $code;
 	}
 
-	public function register ($username, $pass, $id_role)
+	// регистрируем пользователя
+	public function register ($username, $pass, $id_role, $user)
 	{
-			if (isset($_POST['username']) && $_POST['pass']) {
-			$username = $_POST['username'];
-			$pass = $_POST['pass'];
-			$id_role = $_POST['id_role'];
 
-			switch ($id_role) {
-				case "admin":
-					$id_role = "1";
-					break;
-				case "moder":
-					$id_role = "2";
-					break;
-				case "user":
-					$id_role = "3";
-					break;
-				default:
-					$id_role = "3";
+			if (isset($username) && isset($pass)) {
+				if ($username != '' &&  $pass != '') {
+					$username = $this->msql->sql_escape($_POST['username']);
+					$pass = $this->msql->sql_escape($_POST['pass']);
+					$id_role = (int)$_POST['id_role'];
+
+					switch ($id_role) {
+						case "admin":
+							$id_role = "1";
+							break;
+						case "moder":
+							$id_role = "2";
+							break;
+						case "user":
+							$id_role = "3";
+							break;
+						default:
+							$id_role = "3";
+					}
+				} else {
+					die ("Введите имя пользователя или пароль");
+				}
 			}
-		}
 
 		$this->msql->Insert("users", array('login'=>"$username", 'password'=>"$pass", 'id_role'=>"$id_role", 'name'=>"$id_role"));
 

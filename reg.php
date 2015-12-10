@@ -12,9 +12,8 @@ $mUsers = M_Users::Instance();
 // Очистка старых сессий.
 $mUsers->ClearSessions();
 
-
 if (isset ($_POST['username']) && isset ($_POST['pass'])) {
-  $mUsers->register($_POST['username'], $_POST['pass'], $_POST['id_role']);
+  $mUsers->register($_POST['username'], $_POST['pass'], $_POST['id_role'], $user);
   header('Location: index.php');
   die();
 }
