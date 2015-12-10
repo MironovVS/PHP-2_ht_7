@@ -154,4 +154,10 @@ class MSQL {
 
 		return mysqli_affected_rows($this->link);
 	}
+
+	// экранирование переменных
+	public function sql_escape($param)
+	{
+		return mysqli_escape_string($this->link, $param);
+	}
 }
