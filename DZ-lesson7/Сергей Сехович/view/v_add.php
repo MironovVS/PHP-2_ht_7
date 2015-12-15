@@ -1,0 +1,1 @@
+<?php/** * Шаблон редактора * ================ * $text - текст статьи */?><form method="post">	<input type="text" name="title_add"><br/><br/>	<textarea name="text_add" rows="15" cols="45"></textarea>	<br/>	<input type="submit" value="Сохранить" /></form>	<a href="/" class="btn">На главную</a>

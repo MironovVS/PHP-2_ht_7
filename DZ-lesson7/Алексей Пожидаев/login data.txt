@@ -1,0 +1,4 @@
+sidorov@test.ru -- Gv5A4e -- manager
+singleton@test.ru -- Uz38xl -- manager
+leroux@test.ru -- kNGdE14 -- administrator
+tishkin@test.ru -- Jx6781 -- user

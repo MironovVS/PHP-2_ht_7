@@ -1,0 +1,17 @@
+table{
+	border-collapse: collapse;
+	border: 1px solid blue;
+}
+td, th{
+	padding: 5px;
+	border: 1px solid blue;
+}
+th{
+	background-color: #98AFC7;
+}
+.no_bottom{
+	border-bottom: none;
+}
+.no_top{
+	border-top: none;
+}

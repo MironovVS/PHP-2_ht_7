@@ -1,0 +1,123 @@
+* { margin: 0; padding: 0; }
+body {
+	background-color: #ecf0f1;
+
+}
+.content {
+    background-color: white;
+    width: 90%;
+    height: auto;
+    margin: 30px;
+    padding: 30px;
+    font: 17px arial,sans-serif;
+}
+ol {
+    margin-left: 45px;
+}
+ol li {
+    list-style-type: lower-alpha;
+}
+.content h1 {
+    font-size: 20px;
+    margin: 25px 0 10px;
+}
+ul {
+    padding-left: 40px;
+}
+h4 {
+    margin-left: -20px;
+}
+input[type="text"] {
+    height: 25px;
+    border: 1px solid #D8D5D5;
+    padding-left: 5px;
+    width: 400px;
+}
+select {
+    height: 27px;
+}
+input[type="submit"] {
+    padding: 10px 23px;
+    border-color: rgba(241, 237, 237, 0.09);
+    cursor: pointer;
+
+
+}
+
+input[type="password"] {
+    height: 25px;
+    border: 1px solid #D8D5D5;
+    margin: 10px 0 10px;
+    padding-left: 5px;
+}
+body.asphalt{
+    background: #34495e;
+
+}
+
+body.blue{
+    background: #3598db;
+}
+body.yellow{
+    background: #f1c40f;
+}
+img.img {
+    margin: 5px;
+}
+p.good {
+    padding: 20px 20px 20px 10px;
+    background-color: rgba(0, 128, 0, 0.19);
+    margin-bottom: 20px;
+}
+p.attention {
+    padding: 20px 20px 20px 10px;
+    background-color: rgba(255, 11, 11, 0.19);
+    margin-bottom: 20px;
+}
+a.btn {
+    text-decoration: none;
+    color: black;
+    padding: 10px;
+    background-color: #40d47e;
+    display: block;
+    width: 95px;
+    margin: 10px 0 10px;
+    text-align: center;
+    font-size: 14px;
+}
+a.btn:hover {
+    background-color: rgba(56, 181, 108, 0.62);
+}
+a.btn.delete {
+    background-color: yellow;   
+}
+footer {
+    padding: 15px 0 15px 35px;
+    background-color: #E8EAEB;
+}
+.main {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.06);
+    padding: 10px;
+    font-size: 23px;
+    margin-bottom: 15px;
+}
+.comments {
+    padding: 10px 0 10px 40px;
+    background-color: rgba(0, 0, 0, 0.04);
+    border: 1px solid #D5D3D3;
+}
+.comments p {
+    background-color: white;
+    margin: 10px;
+}
+.comments a {
+    float: right;
+    padding: 10px;
+    background-color: #F1FF21;
+    text-decoration: none;
+    border-radius: 3px;
+}
+.comments div span {
+    font-weight: bold;
+}
